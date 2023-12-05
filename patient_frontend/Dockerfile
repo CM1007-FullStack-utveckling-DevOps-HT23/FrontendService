@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14-alpine
 
 # This command sets the working directory for any commands you add in the Dockerfile.
 # So, while building the image, the commands will be executed in this directory.

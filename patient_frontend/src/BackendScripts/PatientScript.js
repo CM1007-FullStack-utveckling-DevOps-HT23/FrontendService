@@ -1,9 +1,9 @@
 import axios from "axios";
-import {API_BASE_URL} from "../config";
+import {API_MESSAGE, API_PATIENT, API_USER} from "../config";
 
 
 export async function getAllPatients() {
-    const url = `${API_BASE_URL}/patient/list`;
+    const url = `${API_PATIENT}/list`;
 
     try {
         const result = await axios.get(url);
@@ -16,7 +16,7 @@ export async function getAllPatients() {
 }
 
 export async function getPatientById(id) {
-    const url = `${API_BASE_URL}/patient/${id}`;
+    const url = `${API_PATIENT}/${id}`;
 
     try {
         const result = await axios.get(url);
@@ -82,7 +82,7 @@ export async function getPatientById(id) {
 }
 
 export async function sendMessage(message, destId) {
-    const url = `${API_BASE_URL}/message/send`;
+    const url = `${API_MESSAGE}/send`;
     const srcID = sessionStorage.getItem('userValId');
 
     const data = {
@@ -100,7 +100,7 @@ export async function sendMessage(message, destId) {
 }
 
 export async function getReceiverDoctors() {
-    const url = `${API_BASE_URL}/user/list/role/doctor`;
+    const url = `${API_USER}/list/role/doctor`;
 
     try {
         const result = await axios.get(url);
@@ -135,7 +135,7 @@ export async function getReceiverDoctors() {
 }
 
 export async function getReceiverStaff() {
-    const url = `${API_BASE_URL}/user/list/role/staff`;
+    const url = `${API_USER}/list/role/staff`;
 
     try {
         const result = await axios.get(url);
@@ -168,7 +168,7 @@ export async function getReceiverStaff() {
 }
 
 export async function getMessagesFor(uId) {
-    const url = `${API_BASE_URL}/message/source/${uId}`;
+    const url = `${API_MESSAGE}/source/${uId}`;
 
     try {
         const result = await axios.get(url);
@@ -235,7 +235,7 @@ export async function getMessagesFor(uId) {
 }
 
 export async function getNotAnsweredMessages(uId){
-    const url = `${API_BASE_URL}/message/target/${uId}`;
+    const url = `${API_MESSAGE}/target/${uId}`;
 
     try {
         const result = await axios.get(url);
@@ -273,7 +273,7 @@ export async function getNotAnsweredMessages(uId){
 }
 
 export async function sendAnsweredMessage(message, messageId){
-    const url = `${API_BASE_URL}/message/answer/${messageId}`;
+    const url = `${API_MESSAGE}/answer/${messageId}`;
     const data = {
         answer: message
     };
@@ -287,7 +287,7 @@ export async function sendAnsweredMessage(message, messageId){
 }
 
 export async function createNoteForPatient(note, patientId){
-    const url = `${API_BASE_URL}/patient/addNote/${patientId}`;
+    const url = `${API_PATIENT}/addNote/${patientId}`;
     const data = {note}
 
     try {
@@ -364,5 +364,17 @@ export async function getDoctorsByName(name){
     ]
 }
 
-
+export async function createPatient(userId, fullName){
+    const url = `${API_PATIENT}/add`;
+    const data = {
+        id: userId,
+        fullName: fullName
+    };
+    try {
+        const result = await axios.post(url, data);
+        return result.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
 

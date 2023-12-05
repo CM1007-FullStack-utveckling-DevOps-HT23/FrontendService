@@ -10,6 +10,7 @@ import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {createAccount} from "../BackendScripts/UserScript";
+import {createPatient} from "../BackendScripts/PatientScript";
 
 export default function CreateAccount() {
 
@@ -32,7 +33,13 @@ export default function CreateAccount() {
             const password = formData.get('password');
             const fullName = formData.get('fullName');
 
-            await createAccount(username,password,role,fullName).then(()=>{navigate("/")})
+            const response = await createAccount(username, password, role, fullName);
+            if(response !== null){
+                if(role === 'PATIENT'){
+                    await createPatient(response, fullName)
+                }
+                navigate("/")
+            }
         }
     }
 
