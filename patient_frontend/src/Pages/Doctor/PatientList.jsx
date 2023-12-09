@@ -91,7 +91,7 @@ export default function PatientList() {
         const result = await getPatientsByName(name);
         if(result.length !== 0){
             result.forEach((value,index)=>{
-                let name = value.fullName != null ? value.fullName : "";
+                let name = value.patientName != null ? value.patientName : "";
                 let uId = value.patientId;
                 fetchedData[index] = createData(name, uId);
             })
@@ -106,7 +106,7 @@ export default function PatientList() {
         const result = await getPatientsByCondition(condition)
         if(result.length !== 0){
             result.forEach((value,index)=>{
-                let name = value.fullName != null ? value.fullName : "";
+                let name = value.patientName != null ? value.patientName : "";
                 let uId = value.patientId;
                 fetchedData[index] = createData(name, uId);
             })

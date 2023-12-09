@@ -1,5 +1,5 @@
 import axios from "axios";
-import {API_MESSAGE, API_PATIENT, API_USER} from "../config";
+import {API_MESSAGE, API_PATIENT, API_QUARKUS_SEARCH, API_USER} from "../config";
 
 
 export async function getAllPatients() {
@@ -299,7 +299,17 @@ export async function createNoteForPatient(note, patientId){
 }
 
 export async function getPatientsByName(name){
-    return [
+    const url = `${API_QUARKUS_SEARCH}/getPatients/byFullName?fullName=${name}`;
+
+    try {
+        const result = await axios.get(url);
+        return result.data;
+    } catch (error) {
+        console.log(error);
+    }
+
+    /*
+        [
         {
             'patientId':'1',
             'fullName':'Robert Schmidtt'
@@ -313,15 +323,28 @@ export async function getPatientsByName(name){
             'fullName':'Jer Schmidtt'
         }
     ]
+     */
 }
 
 export async function getPatientsByCondition(condition){
-    return [
+    const url = `${API_QUARKUS_SEARCH}/getPatients/byConditionType?conditionType=${condition}`;
+
+    try {
+        const result = await axios.get(url);
+        return result.data;
+    } catch (error) {
+        console.log(error);
+    }
+    return
+    /*
+    [
         {
             'patientId':'2',
             'fullName':'Bob Schmidtt'
         }
     ]
+
+     */
 }
 
 export async function getDoctorsByName(name){

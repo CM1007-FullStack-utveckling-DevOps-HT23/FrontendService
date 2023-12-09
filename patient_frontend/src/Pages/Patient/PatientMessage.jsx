@@ -24,7 +24,14 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import {getMessagesFor, getReceiverDoctors, getReceiverStaff, sendMessage} from "../../BackendScripts/PatientScript";
+import {
+    getMessagesFor,
+    getPatientById,
+    getReceiverDoctors,
+    getReceiverStaff,
+    sendMessage
+} from "../../BackendScripts/PatientScript";
+import {getUserById} from "../../BackendScripts/UserScript";
 
 export default function PatientMessage() {
 
@@ -84,17 +91,22 @@ export default function PatientMessage() {
 
         async function fetchMessages() {
             const resultMessages = await getMessagesFor(sessionStorage.getItem('userValId'));
+            console.log(resultMessages)
 
             let fetchedData = [];
             let i = 0;
             if (resultMessages != null) {
-                resultMessages.forEach((element, index) => {
+                for (const element of resultMessages) {
+                    const index = resultMessages.indexOf(element);
                     let message = element.message != null ? element.message : "--";
-                    let targetFullName = element.targetFullName != null ? element.targetFullName : "--";
+
+                    let targetFullNameResult = await getUserById(element.targetUserId);
+                    console.log(targetFullNameResult)
+                    let targetFullName = targetFullNameResult.fullName != null ? targetFullNameResult.fullName : "--";
                     let answer = element.answer != null && element.answer != "" ? element.answer : "No respons received yet...";
                     fetchedData[i] = createMessage(message, answer, targetFullName);
                     i++;
-                })
+                }
                 //console.log(fetchedData);
                 setMessages(fetchedData);
             }

@@ -5,7 +5,7 @@ import Fade from "@mui/material/Fade";
 import Grid from "@mui/material/Grid";
 import {Collapse, Divider, FormControl, InputLabel, LinearProgress, MenuItem, Select, Stack} from "@mui/material";
 import {useEffect, useState} from "react";
-import {getNotAnsweredMessages, sendAnsweredMessage} from "../../BackendScripts/PatientScript";
+import {getNotAnsweredMessages, getPatientById, sendAnsweredMessage} from "../../BackendScripts/PatientScript";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -32,13 +32,14 @@ export default function MessageHandling() {
             const resultMessages = await getNotAnsweredMessages(sessionStorage.getItem("userValId"))
             let fetchedData = [];
             let i = 0;
-            resultMessages.forEach((element) => {
+            for (const element of resultMessages) {
                 let message = element.message != null ? element.message : 'error..';
-                let sourceFullName = element.sourceFullName != null ? element.sourceFullName : 'error...';
+                let sourceFullNameResult = await getPatientById(element.sourceUserId);
+                let sourceFullName = sourceFullNameResult.patientName != null ? sourceFullNameResult.patientName : 'error...';
 
                 fetchedData[i] = createMessage(message, sourceFullName,element.id);
                 i++;
-            });
+            }
             setMessages(fetchedData);
         }
 

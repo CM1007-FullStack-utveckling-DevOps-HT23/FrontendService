@@ -47,3 +47,15 @@ export async function getRoleFor(uId){
         console.log(error);
     }
 }
+
+export async function getUserById(uId){
+    const url = `${API_USER}/${uId}`;
+
+    try {
+        const result = await axios.get(url);
+        return result.data
+        //return result.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
