@@ -19,6 +19,7 @@ import PatientListStaff from "./Pages/Staff/PatientListStaff";
 import PatientDetails from "./Pages/Doctor/PatientDetails";
 import {getRoleFor} from "./BackendScripts/UserScript";
 import DoctorList from "./Pages/Other/DoctorList";
+import ViewPatientImage from "./Pages/Doctor/ViewPatientImage";
 
 function App() {
     const [isStaff, setIsStaff] = useState(false);
@@ -97,6 +98,7 @@ function App() {
                     <Route path="/create-note" element={<CreateNote/>}/>
                     <Route path="/details-patient" element={<PatientInformation/>}/>
                     <Route path="/doctors" element={<DoctorList/>}/>
+                    <Route path="/details-patient/encounter-image" element={<ViewPatientImage/>}/>
                     <Route path="*" element={<PageNotFound/>}/>
                 </Routes>
             </>

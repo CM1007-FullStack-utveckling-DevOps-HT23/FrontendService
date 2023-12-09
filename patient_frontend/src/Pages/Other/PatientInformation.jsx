@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import {useState} from "react";
 import {useEffect} from "react";
@@ -30,12 +30,22 @@ export default function PatientInformation({loggedInUserId}) {
     const [showLoadingBar, setShowLoadingBar] = useState(true);
     const location = useLocation();
     const [patient, setPatient] = useState({});
+    const navigate = useNavigate()
 
     //Custom Components
     function CustomRow(input) {
         const element = input.props.element;
         const key = input.props.key;
         const [showObservations, setShowObservations] = useState(false)
+
+        function handleGoToImage(encounterId){
+            console.log("ID: " + encounterId)
+            navigate("/details-patient/encounter-image", {
+                state: {
+                    encounterId: encounterId,
+                },
+            });
+        }
 
         return (
             <React.Fragment key={key}>
@@ -44,6 +54,16 @@ export default function PatientInformation({loggedInUserId}) {
                     <TableCell><Button size={'small'} variant={'outlined'} onClick={() => {
                         setShowObservations(!showObservations)
                     }}> View observations </Button></TableCell>
+                    <TableCell>
+                        <Button
+                            size={'small'}
+                            variant={'outlined'}
+                            onClick={()=>{
+                                handleGoToImage(element.id)
+                            }}
+                            disabled={loggedInUserId != null}
+                        > Go to related image </Button>
+                    </TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell colSpan={2} sx={{paddingBottom: 0, paddingTop: 0}}>
@@ -123,6 +143,7 @@ export default function PatientInformation({loggedInUserId}) {
                                                     <TableRow>
                                                         <TableCell>Date of encounter</TableCell>
                                                         <TableCell>Observation</TableCell>
+                                                        <TableCell>Image</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>

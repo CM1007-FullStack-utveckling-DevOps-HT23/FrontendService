@@ -401,3 +401,31 @@ export async function createPatient(userId, fullName){
     }
 }
 
+//TODO(Fix this)
+const URL = "http://localhost:3000"
+
+export async function getEncounterImage(encounterId){
+    try {
+        const result = await axios.get(URL + '/getImage',{params:{
+                encounterId:encounterId
+            }})
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function postEncounterImage(encounterId, blob){
+    try{
+        await axios.post(URL + '/putImage', {
+            encounterId : encounterId,
+            blob: blob
+        }, {
+            headers : {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then((data) => console.log(data))
+    }catch (error){
+        console.log(error)
+    }
+}
