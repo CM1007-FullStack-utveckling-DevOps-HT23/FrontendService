@@ -183,7 +183,7 @@ export default function PatientList() {
                                                             <TableCell> <Button size="small" variant="contained"
                                                                                 onClick={(event) => {
                                                                                     handelPatientDetails(row.uId)
-                                                                                }}> Se more </Button>
+                                                                                }}> See more </Button>
                                                             </TableCell>
                                                         </TableRow>
                                                     </Fade>

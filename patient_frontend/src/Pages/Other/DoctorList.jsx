@@ -20,8 +20,8 @@ import Chip from "@mui/material/Chip";
 import {useEffect, useState} from "react";
 import {
     getAllPatients,
-    getDoctorsByName,
-    getPatientsByCondition,
+    getDoctorsByName, getEncountersByDoctorId,
+    getPatientsByCondition, getPatientsByDoctorId,
     getPatientsByName
 } from "../../BackendScripts/PatientScript";
 import Fade from "@mui/material/Fade";
@@ -57,18 +57,27 @@ export default function DoctorList() {
         let fetchedData = []
         const result = await getDoctorsByName(name);
         if (result.length !== 0) {
-            //TODO: Reformat the data here!
-            result.forEach((element, index) => {
-                fetchedData[index] = createRowData(element.fullName, element.patients, element.encounters)
-            })
+            for (const element of result) {
+                const index = result.indexOf(element);
+                const doctorId = element.userId;
+                const patients = await getPatientsByDoctorId(doctorId)
+                const encounters = await getEncountersByDoctorId(doctorId)
+                fetchedData[index] = createRowData(element.doctorName, patients, encounters)
+            }
             setDoctorRows(fetchedData)
         }
 
     }
 
     function createRowData(fullName, patients, encounters) {
-        let patientList = patients.map(({fullName}) => ({fullName}))
-        let encounterList = encounters.map(({fullName, date}) => ({fullName, date}))
+        let patientList = [];
+        let encounterList = []
+        if(patients != undefined && patients != null && patients.length != 0){
+            patientList = patients.map(({patientName}) => ({patientName}))
+        }
+        if(patients != undefined && encounters != null && patients.length != 0){
+            encounterList = encounters.map(({patient, encounterDate}) => ({patientName:patient.patientName, date: encounterDate}))
+        }
 
         const row = {
             fullName,
@@ -96,48 +105,53 @@ export default function DoctorList() {
                         <TableCell colSpan={2} sx={{paddingBottom: 0, paddingTop: 0}}>
                             <Collapse in={show} timeout={"auto"} unmountOnExit>
                                 <Box>
-                                    <Stack direction={'row'}>
-
-                                    <Table style={{width: '80%', marginBottom: '10%'}}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Patients</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {element.patientList != null ? element.patientList.map((element, index) => (
-                                                <React.Fragment key={index}>
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <Table style={{width: '80%', marginBottom: '10%'}}>
+                                                <TableHead>
                                                     <TableRow>
-                                                        <TableCell>{element.fullName}</TableCell>
+                                                        <TableCell>Patients</TableCell>
                                                     </TableRow>
-                                                </React.Fragment>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {(element !=  null && element.patientList != null) ? element.patientList.map((element, index) => (
+                                                        <React.Fragment key={index}>
+                                                            <TableRow>
+                                                                <TableCell>{element.patientName}</TableCell>
+                                                            </TableRow>
+                                                        </React.Fragment>
 
-                                            )) : null}
-                                        </TableBody>
-                                    </Table>
-                                    <Table style={{width: '80%', marginBottom: '10%', marginLeft:'10%'}}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Encounters</TableCell>
-                                                <TableCell></TableCell>
-                                                <TableCell></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {element.encounterList != null ? element.encounterList.map((element, index) => (
-                                                <React.Fragment key={index}>
+                                                    )) : null}
+                                                </TableBody>
+                                            </Table>
+
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Table style={{width: '90%', marginBottom: '10%', marginLeft:'5%'}}>
+                                                <TableHead>
                                                     <TableRow>
-                                                        <TableCell>{element.fullName}</TableCell>
-                                                        <TableCell> > </TableCell>
-                                                        <TableCell>{element.date.split(' ')[0]}</TableCell>
+                                                        <TableCell>Encounters</TableCell>
+                                                        <TableCell></TableCell>
+                                                        <TableCell></TableCell>
                                                     </TableRow>
-                                                </React.Fragment>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {(element != null && element.encounterList != null) ? element.encounterList.map((element, index) => (
+                                                        <React.Fragment key={index}>
+                                                            <TableRow>
+                                                                <TableCell>{element.patientName}</TableCell>
+                                                                <TableCell> > </TableCell>
+                                                                <TableCell>{element.date.split(' ')[0]}</TableCell>
+                                                            </TableRow>
+                                                        </React.Fragment>
 
-                                            )) : null}
-                                        </TableBody>
-                                    </Table>
-                                    </Stack>
+                                                    )) : null}
+                                                </TableBody>
+                                            </Table>
 
+                                        </Grid>
+
+                                    </Grid>
                                 </Box>
                             </Collapse>
                         </TableCell>

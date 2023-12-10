@@ -398,7 +398,7 @@ export async function getDoctorsByName(name){
 }
 
 export async function getPatientsByDoctorId(doctorId) {
-    const url = `${API_QUARKUS_SEARCH}/getDoctors/byDoctorId?doctorId=${doctorId}`;
+    const url = `${API_QUARKUS_SEARCH}/getPatients/byDoctorId?doctorId=${doctorId}`;
 
     try {
         const result = await axios.get(url);
