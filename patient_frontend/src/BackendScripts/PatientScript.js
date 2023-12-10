@@ -1,5 +1,5 @@
 import axios from "axios";
-import {API_MESSAGE, API_PATIENT, API_QUARKUS_SEARCH, API_USER} from "../config";
+import {API_IMAGE, API_MESSAGE, API_PATIENT, API_QUARKUS_SEARCH, API_USER} from "../config";
 
 
 export async function getAllPatients() {
@@ -335,7 +335,6 @@ export async function getPatientsByCondition(condition){
     } catch (error) {
         console.log(error);
     }
-    return
     /*
     [
         {
@@ -348,7 +347,16 @@ export async function getPatientsByCondition(condition){
 }
 
 export async function getDoctorsByName(name){
-    return [
+    const url = `${API_QUARKUS_SEARCH}/getDoctors/byFullName?fullName=${name}`;
+
+    try {
+        const result = await axios.get(url);
+        return result.data;
+    } catch (error) {
+        console.log(error);
+    }
+    /*
+    [
         {
             'uId':'2',
             'fullName':'Bob Schmidtt',
@@ -385,6 +393,30 @@ export async function getDoctorsByName(name){
             ]
         }
     ]
+
+     */
+}
+
+export async function getPatientsByDoctorId(doctorId) {
+    const url = `${API_QUARKUS_SEARCH}/getDoctors/byDoctorId?doctorId=${doctorId}`;
+
+    try {
+        const result = await axios.get(url);
+        return result.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getEncountersByDoctorId(doctorId) {
+    const url = `${API_QUARKUS_SEARCH}/getEncounters/byDoctorId?doctorId=${doctorId}`;
+
+    try {
+        const result = await axios.get(url);
+        return result.data;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export async function createPatient(userId, fullName){
@@ -401,12 +433,9 @@ export async function createPatient(userId, fullName){
     }
 }
 
-//TODO(Fix this)
-const URL = "http://localhost:3000"
-
 export async function getEncounterImage(encounterId){
     try {
-        const result = await axios.get(URL + '/getImage',{params:{
+        const result = await axios.get(API_IMAGE + '/getImage',{params:{
                 encounterId:encounterId
             }})
         return result;
@@ -417,7 +446,7 @@ export async function getEncounterImage(encounterId){
 
 export async function postEncounterImage(encounterId, blob){
     try{
-        await axios.post(URL + '/putImage', {
+        await axios.post(API_IMAGE + '/putImage', {
             encounterId : encounterId,
             blob: blob
         }, {

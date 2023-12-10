@@ -52,7 +52,7 @@ export default function DrawComponent({encounterId}) {
             setContext(preContext)
 
             //TODO(UNCOMMENT THIS)
-            //await handleGetImage()
+            await handleGetImage()
         }
 
         fetchData().then(
@@ -113,30 +113,36 @@ export default function DrawComponent({encounterId}) {
             .then(res => {
                 //console.log("Function getEncounterImage executed")
                 //console.log(res)
+                if((res != null && res.data.result != null)) {
+
+                    //Convert the result into base64
+                    var ascii = new Uint8Array(res.data.result.data)
+                    var b64encoded = btoa(String.fromCharCode.apply(null, ascii))
+                    //document.getElementById("ItemPreview").src = "data:image/png;base64," + b64encoded
+                    // <img id="ItemPreview" src="" alt="No image"/>
 
 
-                //Convert the result into base64
-                var ascii = new Uint8Array(res.data.result.data)
-                var b64encoded = btoa(String.fromCharCode.apply(null,ascii))
-                //document.getElementById("ItemPreview").src = "data:image/png;base64," + b64encoded
-                // <img id="ItemPreview" src="" alt="No image"/>
+                    const newBlob = new Blob([res.data.result.data], {type: 'image/png'})
+                    var url = URL.createObjectURL(newBlob);
+                    var image = new Image()
+                    image.src = "data:image/png;base64," + b64encoded
 
-
-                const newBlob = new Blob([res.data.result.data], {type: 'image/png'})
-                var url = URL.createObjectURL(newBlob);
-                var image = new Image()
-                image.src = "data:image/png;base64," + b64encoded
-
-                if(image.complete){
-                    context.drawImage(image, 0, 0, canvas.width, canvas.height)
-                    URL.revokeObjectURL(url)
-                }else{
-                    image.onload = function () {
-                        context.drawImage(image, 0, 0, canvas.width, canvas.height)
+                    if (image.complete) {
+                        let preCanvas = document.getElementById("myCanvas");
+                        let preContext = preCanvas.getContext('2d')
+                        preContext.drawImage(image, 0, 0, preCanvas.width, preCanvas.height)
                         URL.revokeObjectURL(url)
+                    } else {
+                        image.onload = function () {
+                            let preCanvas = document.getElementById("myCanvas");
+                            let preContext = preCanvas.getContext('2d')
+                            preContext.drawImage(image, 0, 0, preCanvas.width, preCanvas.height)
+                            URL.revokeObjectURL(url)
+                        }
                     }
                 }
             })
+
 
 
     }
