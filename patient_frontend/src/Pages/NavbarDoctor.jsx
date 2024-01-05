@@ -3,15 +3,17 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import {Stack} from "@mui/material";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Button from "@mui/material/Button";
 import VaccinesIcon from '@mui/icons-material/Vaccines';
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function NavbarDoctor(){
+    const {keycloak} = useKeycloak()
+    const navigate = useNavigate()
 
     function handleLogOut(){
-        sessionStorage.clear();
-        window.location.reload();
+        keycloak.logout().then(() => {navigate("/")})
     }
 
     return(

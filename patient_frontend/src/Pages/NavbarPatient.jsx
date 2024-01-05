@@ -4,15 +4,18 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import {Stack} from "@mui/material";
 import Button from "@mui/material/Button";
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Container from "@mui/material/Container";
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import Grid from "@mui/material/Grid";
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function NavbarPatient(){
+    const {keycloak} = useKeycloak()
+    const navigate = useNavigate()
+
     function handleLogOut(){
-        sessionStorage.clear();
-        window.location.reload();
+        keycloak.logout().then(() => {navigate("/")})
     }
 
     return(

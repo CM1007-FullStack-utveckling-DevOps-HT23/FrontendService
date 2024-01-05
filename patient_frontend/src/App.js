@@ -20,104 +20,115 @@ import PatientDetails from "./Pages/Doctor/PatientDetails";
 import {getRoleFor} from "./BackendScripts/UserScript";
 import DoctorList from "./Pages/Other/DoctorList";
 import ViewPatientImage from "./Pages/Doctor/ViewPatientImage";
+import {useKeycloak} from "@react-keycloak/web";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 function App() {
-    const [isStaff, setIsStaff] = useState(false);
-    const [isDoctor, setIsDoctor] = useState(false);
-    const [isPatient, setIsPatient] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userId, setUserId] = useState('');
+    //const [isStaff, setIsStaff] = useState(false);
+    //const [isDoctor, setIsDoctor] = useState(false);
+    //const [isPatient, setIsPatient] = useState(false);
+    //const [isLoggedIn, setIsLoggedIn] = useState(false);
+    //const [userId, setUserId] = useState('');
     const navigate = useNavigate();
+    const {keycloak} = useKeycloak()
 
-    useEffect(()=>{
+    useEffect(() => {
+        /*
+        if(keycloak.idTokenParsed != undefined){
+            const result = keycloak.idTokenParsed.systemRole.toUpperCase()
+            let role = result.role;
 
-        async function fetchRole(){
-            if(sessionStorage.getItem('userValId')!=undefined){
-                setIsLoggedIn(true);
-                const result = await getRoleFor(sessionStorage.getItem('userValId'))
-                let role = result.role;
+            switch (role) {
+                case 'PATIENT':
+                    setIsPatient(true);
+                    break;
 
-                switch (role){
-                    case 'PATIENT':
-                        setIsPatient(true);
-                        break;
+                case 'DOCTOR':
+                    setIsDoctor(true);
+                    break;
 
-                    case 'DOCTOR':
-                        setIsDoctor(true);
-                        break;
-
-                    case 'STAFF':
-                        setIsStaff(true);
-                        break;
-                }
-
-            }else{
-                setIsLoggedIn(false);
-                navigate("/");
+                case 'STAFF':
+                    setIsStaff(true);
+                    break;
             }
         }
+        */
+    }, [])
 
-        fetchRole().then();
+    function isStaff(){
+        return keycloak.idTokenParsed.systemRole.toUpperCase() == "STAFF"
+    }
 
-    },[])
+    function isDoctor(){
+        return keycloak.idTokenParsed.systemRole.toUpperCase() == "DOCTOR"
+    }
 
-  return (
-    <>
-        {isLoggedIn && (isPatient || isDoctor || isStaff) ? null :
-            <>
-                <Routes>
-                    <Route index element={<Login />}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/create-account" element={<CreateAccount/>}/>
-                </Routes>
-            </>}
+    function isPatient(){
+        return keycloak.idTokenParsed.systemRole.toUpperCase() == "PATIENT"
+    }
 
-        {isStaff ? (
-            <>
-                <NavbarStaff/>
-                <Routes>
-                    <Route index element={<HomeStaff/>}/>
-                    <Route path="/home" element={<HomeStaff/>}/>
-                    <Route path="/messages" element={<MessageHandling/>}/>
-                    <Route path="/patients" element={<PatientListStaff/>}/>
-                    <Route path="/create-note" element={<CreateNote/>}/>
-                    <Route path="*" element={<PageNotFound/>}/>
-                </Routes>
 
-            </>
-        ): null}
+    return (
+        <>
 
-        {isDoctor ? (
-            <>
-                <NavbarDoctor/>
-                <Routes>
-                    <Route index element={<HomeDoctor/>}/>
-                    <Route path="/home" element={<HomeDoctor/>}/>
-                    <Route path="/messages" element={<MessageHandling/>}/>
-                    <Route path="/patients" element={<PatientList/>}/>
-                    <Route path="/create-note" element={<CreateNote/>}/>
-                    <Route path="/details-patient" element={<PatientInformation/>}/>
-                    <Route path="/doctors" element={<DoctorList/>}/>
-                    <Route path="/details-patient/encounter-image" element={<ViewPatientImage/>}/>
-                    <Route path="*" element={<PageNotFound/>}/>
-                </Routes>
-            </>
-        ): null}
+            {keycloak.authenticated ? null :
+                <>
+                    <Routes>
+                        <Route index element={<Login />}/>
+                        <Route path="/login" element={<Login/>}/>
+                    </Routes>
+                </>}
 
-        {isPatient ? (
-            <>
-                <NavbarPatient/>
-                <Routes>
-                    <Route index element={<PatientInformation loggedInUserId={sessionStorage.getItem("userValId")}/>}/>
-                    <Route path="/home" element={<PatientInformation loggedInUserId={sessionStorage.getItem("userValId")}/>}/>
-                    <Route path="/messages" element={<PatientMessage/>}/>
-                    <Route path="*" element={<PageNotFound/>}/>
-                </Routes>
-            </>
-        ): null}
+            {keycloak.authenticated && isStaff() ? (
+                <>
+                    <NavbarStaff/>
+                    <Routes>
+                        <Route index element={<HomeStaff/>}/>
+                        <Route path="/home" element={<HomeStaff/>}/>
+                        <Route path="/messages" element={<MessageHandling/>}/>
+                        <Route path="/patients" element={<PatientListStaff/>}/>
+                        <Route path="/create-note" element={<CreateNote/>}/>
+                        <Route path="*" element={<PageNotFound/>}/>
+                    </Routes>
 
-    </>
-  );
+                </>
+            ) : null}
+
+
+            {keycloak.authenticated && isDoctor() ? (
+                <>
+                    <NavbarDoctor/>
+                    <Routes>
+                        <Route index element={<HomeDoctor/>}/>
+                        <Route path="/home" element={<HomeDoctor/>}/>
+                        <Route path="/messages" element={<MessageHandling/>}/>
+                        <Route path="/patients" element={<PatientList/>}/>
+                        <Route path="/create-note" element={<CreateNote/>}/>
+                        <Route path="/details-patient" element={<PatientInformation/>}/>
+                        <Route path="/doctors" element={<DoctorList/>}/>
+                        <Route path="/details-patient/encounter-image" element={<ViewPatientImage/>}/>
+                        <Route path="*" element={<PageNotFound/>}/>
+                    </Routes>
+                </>
+            ) : null}
+
+            {keycloak.authenticated && isPatient() ? (
+                <>
+                    <NavbarPatient/>
+                    <Routes>
+                        <Route index element={<PatientInformation
+                            loggedInUserId={sessionStorage.getItem("userValId")}/>}/>
+                        <Route path="/home" element={<PatientInformation
+                            loggedInUserId={sessionStorage.getItem("userValId")}/>}/>
+                        <Route path="/messages" element={<PatientMessage/>}/>
+                        <Route path="*" element={<PageNotFound/>}/>
+                    </Routes>
+                </>
+            ) : null}
+
+        </>
+    );
 }
 
 export default App;

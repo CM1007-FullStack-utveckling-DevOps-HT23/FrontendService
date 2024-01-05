@@ -9,14 +9,20 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {BrowserRouter} from "react-router-dom";
 
+//Keycloak
+//KeyCloak
+import {ReactKeycloakProvider} from "@react-keycloak/web";
+import keycloak from "./BackendScripts/Keycloak";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <App/>
-        </BrowserRouter>
-    </React.StrictMode>
+    //<React.StrictMode>
+        <ReactKeycloakProvider authClient={keycloak}>
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
+        </ReactKeycloakProvider>
+    //</React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

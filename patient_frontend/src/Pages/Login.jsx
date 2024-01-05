@@ -6,10 +6,10 @@ import Box from '@mui/material/Box';
 import Typography from "@mui/material/Typography";
 import Button from '@mui/material/Button';
 import Chip from "@mui/material/Chip";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {login} from "../BackendScripts/UserScript";
-
+import {useKeycloak} from "@react-keycloak/web";
 
 
 export default function Login() {
@@ -17,7 +17,7 @@ export default function Login() {
     //Hooks
     const navigate = useNavigate();
     const [loginErr,setLoginErr] = useState(false);
-
+    const {keycloak} = useKeycloak()
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -50,36 +50,15 @@ export default function Login() {
     return (
         <>
             <Container maxWidth="xs">
-                <Box component="form" onSubmit={handleLogin} sx={{marginTop:"40%"}}>
+                <Box sx={{marginTop:"40%"}}>
                     <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center">
                         <Grid item xs={12} md={12}>
-                            <Typography variant="h3"> Login </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                            <TextField
-                                inputMode={"text"}
-                                required
-                                label="Username"
-                                autoFocus={true}
-                                name="username"
-                                error={loginErr}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                            <TextField
-                                inputMode={"text"}
-                                required
-                                label="Password"
-                                type="password"
-                                name="password"
-                                helperText={loginErr ? "Wrong username or Password" : ''}
-                                error = {loginErr}
-                            />
+                            <Typography variant="h3"> Journal system </Typography>
                         </Grid>
                         <Grid item xs={12} md={12}>
                             <Button
                                 variant="outlined"
-                                onClick={handleCreateAccount}>
+                                onClick={() => {keycloak.register()}}>
                                 Create account
                             </Button>
                         </Grid>
@@ -90,7 +69,7 @@ export default function Login() {
                         <Grid item xs={12} md={12}>
                             <Button
                                 variant="contained"
-                                type="submit">
+                                onClick={() => {keycloak.login()}}>
                                 Login
                             </Button>
                         </Grid>

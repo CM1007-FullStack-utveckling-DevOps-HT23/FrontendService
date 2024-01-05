@@ -6,13 +6,14 @@ import Box from "@mui/material/Box";
 import {Stack} from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
 import Button from "@mui/material/Button";
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function NavbarStaff(){
     const navigate = useNavigate();
+    const {keycloak} = useKeycloak()
 
     function handleLogOut(){
-        sessionStorage.clear();
-        window.location.reload();
+        keycloak.logout().then(() => {navigate("/")})
     }
 
     return(
