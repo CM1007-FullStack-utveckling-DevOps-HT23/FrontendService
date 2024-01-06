@@ -11,13 +11,14 @@ import {BrowserRouter} from "react-router-dom";
 
 //Keycloak
 //KeyCloak
-import {ReactKeycloakProvider} from "@react-keycloak/web";
-import keycloak from "./BackendScripts/Keycloak";
+import {ReactKeycloakProvider, useKeycloak} from "@react-keycloak/web";
+import keycloak, {onEvent} from "./BackendScripts/Keycloak";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
     //<React.StrictMode>
-        <ReactKeycloakProvider authClient={keycloak}>
+        <ReactKeycloakProvider authClient={keycloak} onEvent={onEvent} >
             <BrowserRouter>
                 <App/>
             </BrowserRouter>

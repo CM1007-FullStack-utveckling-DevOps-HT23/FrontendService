@@ -9,6 +9,14 @@ const keycloak = new Keycloak({
 export default keycloak;
 
 
+export const onEvent = (event, error) => {
+    //console.log('onKeycloakEvent', event, error)
+    if(event == 'onAuthLogout')
+        window.location.href = ""
+
+}
+
+
 /*
 import Keycloak from "keycloak-js";
 const keycloak = new Keycloak({
