@@ -118,9 +118,9 @@ function App() {
                     <NavbarPatient/>
                     <Routes>
                         <Route index element={<PatientInformation
-                            loggedInUserId={sessionStorage.getItem("userValId")}/>}/>
+                            loggedInUserId={/*sessionStorage.getItem("userValId")*/ keycloak.tokenParsed.sub}/>}/>
                         <Route path="/home" element={<PatientInformation
-                            loggedInUserId={sessionStorage.getItem("userValId")}/>}/>
+                            loggedInUserId={/*sessionStorage.getItem("userValId")*/ keycloak.tokenParsed.sub}/>}/>
                         <Route path="/messages" element={<PatientMessage/>}/>
                         <Route path="*" element={<PageNotFound/>}/>
                     </Routes>

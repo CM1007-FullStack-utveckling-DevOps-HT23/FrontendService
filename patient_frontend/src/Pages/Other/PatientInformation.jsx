@@ -99,6 +99,7 @@ export default function PatientInformation({loggedInUserId}) {
     useEffect(() => {
         const fetchPatient = async () => {
             let uId;
+            //Can Just check the 'systemRole' with keyCloak if problems arise
             if (loggedInUserId != null) {
                 uId = loggedInUserId;
             } else {
