@@ -13,6 +13,7 @@ import {
     Typography
 } from "@mui/material";
 import {getEncounterImage, postEncounterImage} from "../../BackendScripts/PatientScript";
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function DrawComponent({encounterId}) {
     //Hooks
@@ -37,7 +38,7 @@ export default function DrawComponent({encounterId}) {
     const [canvas, setCanvas] = useState(null)
     const [context, setContext] = useState(null)
     const [loading, setLoading] = useState(true)
-
+    const {keycloak} = useKeycloak()
 
     //#######################################################################
     // Runs on load
@@ -109,7 +110,7 @@ export default function DrawComponent({encounterId}) {
     //#######################################################################
 
     async function handleGetImage() {
-        await getEncounterImage(encounterId)
+        await getEncounterImage(encounterId, keycloak.token)
             .then(res => {
                 //console.log("Function getEncounterImage executed")
                 //console.log(res)
@@ -157,7 +158,7 @@ export default function DrawComponent({encounterId}) {
                 } else {
                     //console.log("Blob-Transformation: Canvas successfully converted to BLOB")
 
-                    await postEncounterImage(encounterId, blob)
+                    await postEncounterImage(encounterId, blob, keycloak.token)
                         .then(res => {})
 
                 }

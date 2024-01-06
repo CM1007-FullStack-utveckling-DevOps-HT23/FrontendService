@@ -61,6 +61,8 @@ function App() {
     }
 
     function isDoctor(){
+        //console.log(JSON.parse(JSON.stringify(keycloak.tokenParsed)))
+        //console.log("Token: " + JSON.parse(JSON.stringify( keycloak.token)))
         return keycloak.idTokenParsed.systemRole.toUpperCase() == "DOCTOR"
     }
 

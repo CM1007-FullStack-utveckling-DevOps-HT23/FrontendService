@@ -22,6 +22,8 @@ import {useEffect} from "react";
 import {getPatientById} from "../../BackendScripts/PatientScript";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
+import {useKeycloak} from "@react-keycloak/web";
+import keycloak from "../../BackendScripts/Keycloak";
 
 
 export default function PatientInformation({loggedInUserId}) {
@@ -37,6 +39,7 @@ export default function PatientInformation({loggedInUserId}) {
         const element = input.props.element;
         const key = input.props.key;
         const [showObservations, setShowObservations] = useState(false)
+        const {keycloak} = useKeycloak()
 
         function handleGoToImage(encounterId){
             console.log("ID: " + encounterId)
@@ -105,8 +108,8 @@ export default function PatientInformation({loggedInUserId}) {
             } else {
                 uId = location.state != null && location.state.patientId != null ? location.state.patientId : -1
             }
-            const res = await getPatientById(uId);
-            //console.log(JSON.stringify(res))
+            const res = await getPatientById(uId, keycloak.token);
+            console.log(JSON.stringify(res))
 
             setPatient(patient => ({
                 ...patient,

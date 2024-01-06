@@ -28,6 +28,7 @@ import Fade from "@mui/material/Fade";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import SearchIcon from '@mui/icons-material/Search';
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function DoctorList() {
     //Hooks
@@ -35,6 +36,7 @@ export default function DoctorList() {
     const [doctorRows, setDoctorRows] = useState([]);
     const [searchLoading, setSearchLoading] = useState(false);
     const [searched, setSearched] = useState(false)
+    const {keycloak} = useKeycloak()
 
     function createData(name, uId) {
         return {name, uId};
@@ -55,13 +57,13 @@ export default function DoctorList() {
 
     async function fetchDoctorsByName(name) {
         let fetchedData = []
-        const result = await getDoctorsByName(name);
+        const result = await getDoctorsByName(name,keycloak.token);
         if (result.length !== 0) {
             for (const element of result) {
                 const index = result.indexOf(element);
                 const doctorId = element.userId;
-                const patients = await getPatientsByDoctorId(doctorId)
-                const encounters = await getEncountersByDoctorId(doctorId)
+                const patients = await getPatientsByDoctorId(doctorId, keycloak.token)
+                const encounters = await getEncountersByDoctorId(doctorId, keycloak.token)
                 fetchedData[index] = createRowData(element.doctorName, patients, encounters)
             }
             setDoctorRows(fetchedData)

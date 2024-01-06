@@ -10,6 +10,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import Fade from "@mui/material/Fade";
 import {createNoteForPatient} from "../../BackendScripts/PatientScript";
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function CreateNote() {
 
@@ -17,7 +18,7 @@ export default function CreateNote() {
     const navigate = useNavigate();
     const location = useLocation();
     const [loading, setLoading] = useState(false);
-
+    const {keycloak} = useKeycloak()
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -26,7 +27,7 @@ export default function CreateNote() {
         const note = formData.get("note");
         const uID = location.state != null && location.state.patientId != null ? location.state.patientId : -1;
 
-        await createNoteForPatient(note,uID).then(()=>{
+        await createNoteForPatient(note,uID, keycloak.token).then(()=>{
             setLoading(true);
             navigate('/patients')
         })

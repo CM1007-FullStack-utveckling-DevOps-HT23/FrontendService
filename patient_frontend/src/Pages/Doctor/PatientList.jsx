@@ -23,6 +23,7 @@ import Fade from "@mui/material/Fade";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import SearchIcon from '@mui/icons-material/Search';
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function PatientList() {
     //Hooks
@@ -31,6 +32,7 @@ export default function PatientList() {
     const navigate = useNavigate();
     const [category, setCategory] = useState('Name');
     const [searchLoading, setSearchLoading] = useState(false);
+    const {keycloak} = useKeycloak()
 
     function createData(name, uId) {
         return {name, uId};
@@ -88,7 +90,7 @@ export default function PatientList() {
 
     async function fetchPatientsByName(name){
         let fetchedData = []
-        const result = await getPatientsByName(name);
+        const result = await getPatientsByName(name, keycloak.token);
         if(result.length !== 0){
             result.forEach((value,index)=>{
                 let name = value.patientName != null ? value.patientName : "";
@@ -103,7 +105,7 @@ export default function PatientList() {
 
     async function fetchPatientsByCondition(condition){
         let fetchedData = []
-        const result = await getPatientsByCondition(condition)
+        const result = await getPatientsByCondition(condition, keycloak.token)
         if(result.length !== 0){
             result.forEach((value,index)=>{
                 let name = value.patientName != null ? value.patientName : "";
@@ -116,7 +118,7 @@ export default function PatientList() {
 
     useEffect(() => {
         async function fetchData() {
-            const resultOfFetch = await getAllPatients();
+            const resultOfFetch = await getAllPatients(keycloak.token);
             let fetchedRowData = [];
 
             if (resultOfFetch != null) {

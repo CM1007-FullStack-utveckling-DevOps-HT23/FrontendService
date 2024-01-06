@@ -1,12 +1,18 @@
 import axios from "axios";
 import {API_IMAGE, API_MESSAGE, API_PATIENT, API_QUARKUS_SEARCH, API_USER} from "../config";
 
-
-export async function getAllPatients() {
+const authConfig = (token) =>{
+    return{
+            headers : {
+                'Authorization': 'Bearer' + token
+            }
+        }
+}
+export async function getAllPatients(token) {
     const url = `${API_PATIENT}/list`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -15,11 +21,11 @@ export async function getAllPatients() {
     //return [{patientName: 'Robin', patientId: '1'}, {patientName: 'Lasse', patientId: '2'}];
 }
 
-export async function getPatientById(id) {
+export async function getPatientById(id, token) {
     const url = `${API_PATIENT}/${id}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -81,7 +87,7 @@ export async function getPatientById(id) {
  */
 }
 
-export async function sendMessage(message, destId) {
+export async function sendMessage(message, destId, token) {
     const url = `${API_MESSAGE}/send`;
     const srcID = sessionStorage.getItem('userValId');
 
@@ -92,18 +98,18 @@ export async function sendMessage(message, destId) {
     };
 
     try {
-        const result = await axios.post(url, data);
+        const result = await axios.post(url, data, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function getReceiverDoctors() {
+export async function getReceiverDoctors(token) {
     const url = `${API_USER}/list/role/doctor`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -134,11 +140,11 @@ export async function getReceiverDoctors() {
 
 }
 
-export async function getReceiverStaff() {
+export async function getReceiverStaff(token) {
     const url = `${API_USER}/list/role/staff`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -167,11 +173,11 @@ export async function getReceiverStaff() {
      */
 }
 
-export async function getMessagesFor(uId) {
+export async function getMessagesFor(uId, token) {
     const url = `${API_MESSAGE}/source/${uId}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -234,11 +240,11 @@ export async function getMessagesFor(uId) {
      */
 }
 
-export async function getNotAnsweredMessages(uId){
+export async function getNotAnsweredMessages(uId, token){
     const url = `${API_MESSAGE}/target/${uId}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -272,37 +278,37 @@ export async function getNotAnsweredMessages(uId){
      */
 }
 
-export async function sendAnsweredMessage(message, messageId){
+export async function sendAnsweredMessage(message, messageId, token){
     const url = `${API_MESSAGE}/answer/${messageId}`;
     const data = {
         answer: message
     };
 
     try {
-        const result = await axios.post(url, data);
+        const result = await axios.post(url, data, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function createNoteForPatient(note, patientId){
+export async function createNoteForPatient(note, patientId, token){
     const url = `${API_PATIENT}/addNote/${patientId}`;
     const data = {note}
 
     try {
-        const result = await axios.post(url, data);
+        const result = await axios.post(url, data, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function getPatientsByName(name){
+export async function getPatientsByName(name, token){
     const url = `${API_QUARKUS_SEARCH}/getPatients/byFullName?fullName=${name}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -326,11 +332,11 @@ export async function getPatientsByName(name){
      */
 }
 
-export async function getPatientsByCondition(condition){
+export async function getPatientsByCondition(condition, token){
     const url = `${API_QUARKUS_SEARCH}/getPatients/byConditionType?conditionType=${condition}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -346,11 +352,11 @@ export async function getPatientsByCondition(condition){
      */
 }
 
-export async function getDoctorsByName(name){
+export async function getDoctorsByName(name, token){
     const url = `${API_QUARKUS_SEARCH}/getDoctors/byFullName?fullName=${name}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
@@ -397,61 +403,68 @@ export async function getDoctorsByName(name){
      */
 }
 
-export async function getPatientsByDoctorId(doctorId) {
+export async function getPatientsByDoctorId(doctorId, token) {
     const url = `${API_QUARKUS_SEARCH}/getPatients/byDoctorId?doctorId=${doctorId}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function getEncountersByDoctorId(doctorId) {
+export async function getEncountersByDoctorId(doctorId, token) {
     const url = `${API_QUARKUS_SEARCH}/getEncounters/byDoctorId?doctorId=${doctorId}`;
 
     try {
-        const result = await axios.get(url);
+        const result = await axios.get(url, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function createPatient(userId, fullName){
+export async function createPatient(userId, fullName, token){
     const url = `${API_PATIENT}/add`;
     const data = {
         id: userId,
         fullName: fullName
     };
     try {
-        const result = await axios.post(url, data);
+        const result = await axios.post(url, data, authConfig(token));
         return result.data;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function getEncounterImage(encounterId){
+export async function getEncounterImage(encounterId, token){
     try {
-        const result = await axios.get(API_IMAGE + '/getImage',{params:{
-                encounterId:encounterId
-            }})
+        const result = await axios.get(API_IMAGE + '/getImage',
+            {
+                params:{
+                    encounterId:encounterId
+                },
+                headers : {
+                    'Authorization': 'Bearer' + token
+                }
+            })
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function postEncounterImage(encounterId, blob){
+export async function postEncounterImage(encounterId, blob, token){
     try{
         await axios.post(API_IMAGE + '/putImage', {
             encounterId : encounterId,
             blob: blob
         }, {
             headers : {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer' + token
             }
         }).then((data) => console.log(data))
     }catch (error){

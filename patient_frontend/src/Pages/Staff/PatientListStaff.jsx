@@ -3,23 +3,22 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {
-    Divider, Grow,
+    Divider,
     LinearProgress,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
-    Zoom
+    TableRow
 } from "@mui/material";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import {useEffect, useState} from "react";
 import {getAllPatients} from "../../BackendScripts/PatientScript";
 import Fade from "@mui/material/Fade";
-import Box from "@mui/material/Box";
+import {useKeycloak} from "@react-keycloak/web";
 
 
 export default function PatientListStaff() {
@@ -27,6 +26,7 @@ export default function PatientListStaff() {
     const [showLoadingBar, setLoadingBar] = useState(true);
     const [patientRows, setPatientRows] = useState([]);
     const navigate = useNavigate();
+    const {keycloak} = useKeycloak()
 
     function handlePatientDetails(uId) {
         navigate("/create-note", {
@@ -42,8 +42,9 @@ export default function PatientListStaff() {
 
 
     useEffect(() => {
+
         async function fetchData() {
-            const resultOfFetch = await getAllPatients();
+            const resultOfFetch = await getAllPatients(keycloak.token);
             let fetchedRowData = [];
 
             if (resultOfFetch != null) {

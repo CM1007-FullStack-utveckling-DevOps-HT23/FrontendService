@@ -32,6 +32,7 @@ import {
     sendMessage
 } from "../../BackendScripts/PatientScript";
 import {getUserById} from "../../BackendScripts/UserScript";
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function PatientMessage() {
 
@@ -42,6 +43,7 @@ export default function PatientMessage() {
     const [indexValue, setIndexValue] = useState(0);
     const [receivers, setReceivers] = useState([])
     const [messages, setMessages] = useState([])
+    const {keycloak} = useKeycloak()
 
     const handleSendMessage = async (event) => {
         event.preventDefault();
@@ -50,7 +52,7 @@ export default function PatientMessage() {
         if(receivers.length != 0){
             const destId = receivers[indexValue].uId;
             setLoading(true)
-            await sendMessage(fd.get("message"), destId).then(() => {
+            await sendMessage(fd.get("message"), destId, keycloak.token).then(() => {
                 setLoading(false)
                 setShowSendMessage(false)
             });
@@ -67,8 +69,8 @@ export default function PatientMessage() {
 
     useEffect(() => {
         async function fetchData() {
-            const resultDoctors = await getReceiverDoctors();
-            const resultStaff = await getReceiverStaff();
+            const resultDoctors = await getReceiverDoctors(keycloak.token);
+            const resultStaff = await getReceiverStaff(keycloak.token);
 
             let fetchedData = [];
             if (resultDoctors != null && resultStaff != null) {
@@ -90,7 +92,7 @@ export default function PatientMessage() {
         }
 
         async function fetchMessages() {
-            const resultMessages = await getMessagesFor(sessionStorage.getItem('userValId'));
+            const resultMessages = await getMessagesFor(/*sessionStorage.getItem('userValId')*/keycloak.tokenParsed.sub,keycloak.token);
             console.log(resultMessages)
 
             let fetchedData = [];
@@ -100,7 +102,7 @@ export default function PatientMessage() {
                     const index = resultMessages.indexOf(element);
                     let message = element.message != null ? element.message : "--";
 
-                    let targetFullNameResult = await getUserById(element.targetUserId);
+                    let targetFullNameResult = await getUserById(element.targetUserId, keycloak.token);
                     console.log(targetFullNameResult)
                     let targetFullName = targetFullNameResult.fullName != null ? targetFullNameResult.fullName : "--";
                     let answer = element.answer != null && element.answer != "" ? element.answer : "No respons received yet...";

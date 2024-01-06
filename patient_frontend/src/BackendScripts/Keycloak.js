@@ -4,7 +4,7 @@ import Keycloak from "keycloak-js";
 const keycloak = new Keycloak({
     url: "https://130.237.11.66:2530/",
     realm: "fullstack_cm1007",
-    clientId: "React-auth-Journal",
+    clientId: "React-auth-Journal"
 });
 export default keycloak;
 

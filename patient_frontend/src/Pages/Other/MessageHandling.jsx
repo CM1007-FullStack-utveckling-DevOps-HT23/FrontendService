@@ -14,6 +14,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Chip from "@mui/material/Chip";
 import SendIcon from '@mui/icons-material/Send';
+import {useKeycloak} from "@react-keycloak/web";
 
 
 export default function MessageHandling() {
@@ -21,6 +22,7 @@ export default function MessageHandling() {
     // Hooks
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true)
+    const {keycloak} = useKeycloak()
 
     //Help methods
     function createMessage(message, sender, id) {
@@ -29,16 +31,18 @@ export default function MessageHandling() {
 
     useEffect(() => {
         async function fetchData() {
-            const resultMessages = await getNotAnsweredMessages(sessionStorage.getItem("userValId"))
+            const resultMessages = await getNotAnsweredMessages(/*sessionStorage.getItem("userValId")*/keycloak.tokenParsed.sub,keycloak.token)
             let fetchedData = [];
             let i = 0;
-            for (const element of resultMessages) {
-                let message = element.message != null ? element.message : 'error..';
-                let sourceFullNameResult = await getPatientById(element.sourceUserId);
-                let sourceFullName = sourceFullNameResult.patientName != null ? sourceFullNameResult.patientName : 'error...';
+            if(resultMessages != undefined && !resultMessages.isEmpty()){
+                for (const element of resultMessages) {
+                    let message = element.message != null ? element.message : 'error..';
+                    let sourceFullNameResult = await getPatientById(element.sourceUserId, keycloak.token);
+                    let sourceFullName = sourceFullNameResult.patientName != null ? sourceFullNameResult.patientName : 'error...';
 
-                fetchedData[i] = createMessage(message, sourceFullName,element.id);
-                i++;
+                    fetchedData[i] = createMessage(message, sourceFullName,element.id);
+                    i++;
+                }
             }
             setMessages(fetchedData);
         }
@@ -53,6 +57,7 @@ export default function MessageHandling() {
         //Hooks
         const [open, setOpen] = useState(false);
         const [sending, setSending] = useState(false)
+        const {keycloak} = useKeycloak()
 
         //Input prop
         const element = input.props.element;
@@ -68,7 +73,7 @@ export default function MessageHandling() {
             //console.log("messageId: " + messageId);
 
 
-            await sendAnsweredMessage(responsMessage,messageId).then(()=>{
+            await sendAnsweredMessage(responsMessage,messageId,keycloak.token).then(()=>{
                 setTimeout(()=>{
                     setSending(false)
                     setOpen(false)

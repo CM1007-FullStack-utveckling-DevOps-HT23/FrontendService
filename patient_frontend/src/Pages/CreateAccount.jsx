@@ -11,6 +11,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {createAccount} from "../BackendScripts/UserScript";
 import {createPatient} from "../BackendScripts/PatientScript";
+import {useKeycloak} from "@react-keycloak/web";
 
 export default function CreateAccount() {
 
@@ -19,7 +20,7 @@ export default function CreateAccount() {
     const [err, setErr] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
+    const {keycloak} = useKeycloak()
 
     const handleCreation = async (event) => {
         event.preventDefault();
@@ -36,7 +37,7 @@ export default function CreateAccount() {
             const response = await createAccount(username, password, role, fullName);
             if(response !== null){
                 if(role === 'PATIENT'){
-                    await createPatient(response, fullName)
+                    await createPatient(response, fullName, keycloak.token)
                 }
                 navigate("/")
             }
