@@ -27,11 +27,10 @@ export async function login(username, password){
 }
 
 //Lägg till fullName som parameter
-export async function createAccount(username, password, role, fullName){
+export async function createAccount(id, role, fullName){
     const url = `${API_USER}/add`;
     const data = {
-        uName: username,
-        password: password,
+        id: id,
         role: role,
         fullName: fullName
     };

@@ -17,12 +17,14 @@ import PatientInformation from "./Pages/Other/PatientInformation";
 import CreateNote from "./Pages/Other/CreateNote";
 import PatientListStaff from "./Pages/Staff/PatientListStaff";
 import PatientDetails from "./Pages/Doctor/PatientDetails";
-import {getRoleFor} from "./BackendScripts/UserScript";
+import {createAccount, getRoleFor} from "./BackendScripts/UserScript";
 import DoctorList from "./Pages/Other/DoctorList";
 import ViewPatientImage from "./Pages/Doctor/ViewPatientImage";
 import {useKeycloak} from "@react-keycloak/web";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import {createPatient, getPatientById} from "./BackendScripts/PatientScript";
+import keycloak from "./BackendScripts/Keycloak";
 
 function App() {
     //const [isStaff, setIsStaff] = useState(false);
@@ -32,9 +34,33 @@ function App() {
     //const [userId, setUserId] = useState('');
     const navigate = useNavigate();
     const {keycloak} = useKeycloak()
+    const [authenticated, setAuthenticated] = useState(false)
 
     useEffect(() => {
-        /*
+        const fetchPatient = async () => {
+            if (keycloak.authenticated){
+                //console.log(keycloak.tokenParsed)
+                //console.log(keycloak.idTokenParsed)
+                const res = await getPatientById(keycloak.tokenParsed.sub,keycloak.token)
+                console.log(res)
+                if (res == undefined){
+                    if(keycloak.idTokenParsed.systemRole.toUpperCase() == "PATIENT")
+                    {
+                        await createPatient(keycloak.tokenParsed.sub,keycloak.tokenParsed.given_name + " " + keycloak.tokenParsed.family_name,keycloak.token)
+                    }
+                    await createAccount(keycloak.tokenParsed.sub,keycloak.idTokenParsed.systemRole.toUpperCase(), keycloak.tokenParsed.given_name + " " + keycloak.tokenParsed.family_name)
+                }
+            }
+        }
+        fetchPatient().then()
+
+    }, [keycloak.authenticated]);
+
+
+
+    /*
+    useEffect(() => {
+
         if(keycloak.idTokenParsed != undefined){
             const result = keycloak.idTokenParsed.systemRole.toUpperCase()
             let role = result.role;
@@ -53,8 +79,9 @@ function App() {
                     break;
             }
         }
-        */
+
     }, [])
+*/
 
     function isStaff(){
         return keycloak.idTokenParsed.systemRole.toUpperCase() == "STAFF"
