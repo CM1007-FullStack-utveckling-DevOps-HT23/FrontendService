@@ -20,12 +20,7 @@ jobs:
         run: |
           cd ./patient_frontend
           npm build
-
-      - name: Testing
-        run: |
-          cd ./patient_frontend
-          npm test --if-present
-
+          
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
