@@ -20,7 +20,7 @@ jobs:
         run: |
           cd ./patient_frontend
           npm build
-          
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:

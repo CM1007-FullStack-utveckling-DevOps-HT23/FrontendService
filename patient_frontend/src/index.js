@@ -11,7 +11,7 @@ import {BrowserRouter} from "react-router-dom";
 
 //Keycloak
 //KeyCloak
-import {ReactKeycloakProvider, useKeycloak} from "@react-keycloak/web";
+import {ReactKeycloakProvider} from "@react-keycloak/web";
 import keycloak, {onEvent} from "./BackendScripts/Keycloak";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

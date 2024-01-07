@@ -52,7 +52,7 @@ export default function PatientMessage() {
         if(receivers.length != 0){
             const destId = receivers[indexValue].uId;
             setLoading(true)
-            await sendMessage(fd.get("message"), destId, keycloak.token).then(() => {
+            await sendMessage(fd.get("message"), destId, keycloak.tokenParsed.sub, keycloak.token).then(() => {
                 setLoading(false)
                 setShowSendMessage(false)
             });

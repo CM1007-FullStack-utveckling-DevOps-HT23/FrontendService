@@ -87,9 +87,9 @@ export async function getPatientById(id, token) {
  */
 }
 
-export async function sendMessage(message, destId, token) {
+export async function sendMessage(message, destId, srcID,  token) {
     const url = `${API_MESSAGE}/send`;
-    const srcID = sessionStorage.getItem('userValId');
+    //const srcID = sessionStorage.getItem('userValId');
 
     const data = {
         message: message,
