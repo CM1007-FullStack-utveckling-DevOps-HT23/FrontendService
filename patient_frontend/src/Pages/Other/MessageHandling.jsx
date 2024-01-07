@@ -31,10 +31,10 @@ export default function MessageHandling() {
 
     useEffect(() => {
         async function fetchData() {
-            const resultMessages = await getNotAnsweredMessages(/*sessionStorage.getItem("userValId")*/keycloak.tokenParsed.sub,keycloak.token)
+            const resultMessages = await getNotAnsweredMessages(/*Storage.getItem("userValId")*/keycloak.tokenParsed.sub,keycloak.token)
             let fetchedData = [];
             let i = 0;
-            if(resultMessages != undefined && !resultMessages.isEmpty()){
+            if(resultMessages != undefined/* && !resultMessages.isEmpty()*/){
                 for (const element of resultMessages) {
                     let message = element.message != null ? element.message : 'error..';
                     let sourceFullNameResult = await getPatientById(element.sourceUserId, keycloak.token);
