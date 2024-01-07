@@ -447,7 +447,7 @@ export async function getEncounterImage(encounterId, token){
                     encounterId:encounterId
                 },
                 headers : {
-                    'Authorization': 'Bearer' + token
+                    'Authorization': 'Bearer ' + token
                 }
             })
         return result;
@@ -464,7 +464,7 @@ export async function postEncounterImage(encounterId, blob, token){
         }, {
             headers : {
                 'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer' + token
+                'Authorization': 'Bearer ' + token
             }
         }).then((data) => console.log(data))
     }catch (error){
