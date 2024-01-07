@@ -4,7 +4,7 @@ import {API_USER} from "../config";
 const authConfig = (token) =>{
     return{
         headers : {
-            'Authorization': 'Bearer' + token
+            'Authorization': 'Bearer ' + token
         }
     }
 }

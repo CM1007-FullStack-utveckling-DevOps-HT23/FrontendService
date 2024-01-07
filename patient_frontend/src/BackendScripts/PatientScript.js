@@ -4,7 +4,7 @@ import {API_IMAGE, API_MESSAGE, API_PATIENT, API_QUARKUS_SEARCH, API_USER} from 
 const authConfig = (token) =>{
     return{
             headers : {
-                'Authorization': 'Bearer' + token
+                'Authorization': 'Bearer ' + token
             }
         }
 }
